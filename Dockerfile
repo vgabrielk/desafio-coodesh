@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libicu-dev \
     libssl-dev \
+    zlib1g-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets intl
 
@@ -29,6 +30,9 @@ RUN pecl install -o -f redis \
 &&  docker-php-ext-enable redis
 
 WORKDIR /var/www
+
+RUN mkdir -p /var/www/app/temp && \
+    chown -R www-data:www-data /var/www/app
 
 COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
