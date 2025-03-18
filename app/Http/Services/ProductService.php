@@ -7,17 +7,12 @@ use App\Http\Enums\ProductStatus;
 
 class ProductService
 {
-    public function createProduct(array $data)
-    {
-        return Product::create($data);
-    }
-
     public function updateProduct(array $data, String $code)
     {
        return Product::where('code', $code)->update($data);
     }
 
-    public function getAllProducts()
+    public function getAllProducts(): \Illuminate\Database\Eloquent\Collection
     {
         return Product::all();
     }
@@ -32,7 +27,7 @@ class ProductService
         return Product::where('code', $code)->first();
     }
 
-    public function getProduct(Product $product)
+    public function getProduct(Product $product): Product
     {
         return $product;
     }

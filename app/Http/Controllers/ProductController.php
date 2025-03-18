@@ -21,12 +21,6 @@ class ProductController extends Controller
     {
         return $this->service->getPaginatedProducts();
     }
-
-    public function store(ProductRequest $request)
-    {
-        return $this->service->createProduct($request->validated());
-    }
-
     public function show(String $code)
     {
         return $this->service->getProductByCode($code);
