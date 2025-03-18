@@ -7,9 +7,12 @@ use App\Http\Enums\ProductStatus;
 
 class ProductService
 {
-    public function updateProduct(array $data, String $code)
+    public function updateProduct(array $data, String $code): \Illuminate\Http\JsonResponse
     {
-       return Product::where('code', $code)->update($data);
+        Product::where('code', $code)->update($data);
+        return response()->json(
+            ['message' => 'Update product success'],
+        );
     }
 
     public function getAllProducts(): \Illuminate\Database\Eloquent\Collection
@@ -24,7 +27,9 @@ class ProductService
 
     public function getProductByCode(string $code)
     {
-        return Product::where('code', $code)->first();
+        $product = Product::where('code', $code)->first();
+        if(!$product) return response()->json(['message' => 'Product not found'], 404);
+        return $product;
     }
 
     public function getProduct(Product $product): Product
@@ -33,11 +38,14 @@ class ProductService
     }
 
 
-    public function deleteProduct(String $code)
+    public function deleteProduct(String $code): \Illuminate\Http\JsonResponse
     {
         $product = Product::where('code', $code)->first();
+        if(!$product) return response()->json(['message' => 'Product not found'], 404);
         $product->status = ProductStatus::TRASH->value;
         $product->save();
-        return $product;
+        return response()->json(
+            ['message' => 'Deleted product success'],
+        );
     }
 }
