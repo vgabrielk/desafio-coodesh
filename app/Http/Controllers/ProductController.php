@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
 
-    protected $service;
+    protected ProductService $service;
 
     public function __construct(ProductService $service)
     {
