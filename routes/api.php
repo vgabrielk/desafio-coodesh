@@ -16,3 +16,4 @@ use \App\Http\Controllers\ProductController;
 */
 
 Route::resource('products', ProductController::class);
+Route::get('/', [\App\Http\Controllers\ProjectStatusController::class, 'getProjectStatus']);
