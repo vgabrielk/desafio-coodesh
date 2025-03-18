@@ -4,22 +4,17 @@ namespace App\Http\Services;
 
 use App\Models\Product;
 use App\Http\Enums\ProductStatus;
+use Illuminate\Http\JsonResponse;
 
 class ProductService
 {
-    public function updateProduct(array $data, String $code): \Illuminate\Http\JsonResponse
+    public function updateProduct(array $data, string $code): JsonResponse
     {
-        Product::where('code', $code)->update($data);
-        return response()->json(
-            ['message' => 'Update product success'],
-        );
+        $product = $this->findOrFail($code);
+        return $product instanceof JsonResponse ? $product : (tap($product)->update($data)
+            ? response()->json(['message' => 'Update product success'])
+            : response()->json(['message' => 'Failed to update product'], 500));
     }
-
-    public function getAllProducts(): \Illuminate\Database\Eloquent\Collection
-    {
-        return Product::all();
-    }
-
     public function getPaginatedProducts()
     {
         return Product::paginate();
@@ -27,25 +22,20 @@ class ProductService
 
     public function getProductByCode(string $code)
     {
-        $product = Product::where('code', $code)->first();
-        if(!$product) return response()->json(['message' => 'Product not found'], 404);
-        return $product;
+        return $this->findOrFail($code);
     }
-
-    public function getProduct(Product $product): Product
+    public function deleteProduct(string $code): JsonResponse
     {
-        return $product;
-    }
-
-
-    public function deleteProduct(String $code): \Illuminate\Http\JsonResponse
-    {
-        $product = Product::where('code', $code)->first();
-        if(!$product) return response()->json(['message' => 'Product not found'], 404);
+        $product = $this->findOrFail($code);
         $product->status = ProductStatus::TRASH->value;
         $product->save();
-        return response()->json(
-            ['message' => 'Deleted product success'],
-        );
+
+        return response()->json(['message' => 'Deleted product success']);
+    }
+
+    private function findOrFail(string $code)
+    {
+        return Product::where('code', $code)->first()
+            ?? response()->json(['message' => 'Product not found'], 404);
     }
 }
