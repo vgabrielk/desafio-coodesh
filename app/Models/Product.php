@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-
+    protected $casts = [
+        'code' => 'string',
+    ];
     protected $fillable = [
         'code',
         'status',

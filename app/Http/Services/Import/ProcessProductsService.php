@@ -10,8 +10,10 @@ class ProcessProductsService
     {
         $dataToUpsert = [];
         foreach ($products as $productData) {
+            $cleanedCode = str_replace(['\\', '"'], '', $productData['code']);
+
             $dataToUpsert[] = [
-                'code' => $productData['code'],
+                'code' => $cleanedCode,
                 'product_name' => $productData['product_name'],
                 'status' => $productData['status'] ?? 'trash',
                 'imported_t' => now(),
