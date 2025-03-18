@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $importTime = config('cron.import_time');
+        $schedule->command('products:import')->dailyAt($importTime);
     }
 
     /**
@@ -23,5 +24,6 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
+
     }
 }
