@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\Database;
 
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseStatusService

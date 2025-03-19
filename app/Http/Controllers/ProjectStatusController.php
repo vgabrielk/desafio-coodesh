@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Database\DatabaseStatusService;
 use App\Http\Services\Import\ImportService;
 use Illuminate\Http\JsonResponse;
-use \App\Http\Services\DatabaseStatusService;
 
 class ProjectStatusController extends Controller
 {

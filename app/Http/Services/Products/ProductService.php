@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\Products;
 
-use App\Models\Product;
 use App\Http\Enums\ProductStatus;
+use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 
 class ProductService

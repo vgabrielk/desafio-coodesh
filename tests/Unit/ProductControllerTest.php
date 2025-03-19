@@ -3,9 +3,8 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\ProductController;
-use App\Http\Enums\ProductStatus;
 use App\Http\Requests\ProductRequest;
-use App\Http\Services\ProductService;
+use App\Http\Services\Products\ProductService;
 use Illuminate\Http\JsonResponse;
 use Mockery;
 use PHPUnit\Framework\TestCase;
