@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $importTime = config('cron.import_time');
-        $schedule->command('products:import')->dailyAt($importTime);
+        $schedule->command('products:import')->daily();
     }
 
     /**
