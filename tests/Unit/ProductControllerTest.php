@@ -72,7 +72,6 @@ class ProductControllerTest extends TestCase
 
     public function test_update_calls_service_method_and_returns_json_response()
     {
-        $code = 'ABC123';
         $requestData = [
             'name' => 'Updated Product',
             'price' => 199.99
@@ -83,13 +82,13 @@ class ProductControllerTest extends TestCase
 
         $this->service->shouldReceive('updateProduct')
             ->once()
-            ->with($requestData, $code)
+            ->with($requestData, $this->code)
             ->andReturn($mockResponse);
 
         $request = \Mockery::mock(ProductRequest::class);
         $request->shouldReceive('validated')->andReturn($requestData);
 
-        $response = $this->controller->update($request, $code);
+        $response = $this->controller->update($request, $this->code);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(
