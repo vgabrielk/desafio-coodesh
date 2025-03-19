@@ -11,9 +11,10 @@ class ImportService
     public static function getLastImport(): string
     {
         $lastImport = Import::latest('imported_at')->first();
+        if(!$lastImport) return 'No imports found';
         $datetime = new \DateTime($lastImport->imported_at,new \DateTimeZone('UTC'));
         $datetime->sub(new \DateInterval('PT3H'));
-        return $datetime->format('H:i:s') ?? 'No imports found';
+        return $datetime->format('H:i:s');
     }
     public static function createImport($file, $processedCount): void
     {
