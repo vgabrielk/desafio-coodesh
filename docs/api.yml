@@ -1,6 +1,139 @@
 openapi: 3.0.1
 info:
-  title: DotNet Challenge 20200902
-  description: CRUD Products
-  version: '0.1'
+  title: Coodesh challenge
+  description: CRUD(RUD) Products
+  version: "0.1"
+servers:
+  - url: http://localhost:8081/api
+paths:
+  /products:
+    get:
+      summary: Retrieve a list of products
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+  /products/{code}:
+    get:
+      summary: Retrieve a single product by CODE
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A single product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+    put:
+      summary: Update a product by CODE
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+    delete:
+      summary: Delete a product by CODE
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product deleted
+        "404":
+          description: Product not found
 
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        status:
+          type: string
+        imported_t:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        creator:
+          type: string
+        created_t:
+          type: string
+          format: date-time
+        last_modified_t:
+          type: string
+          format: date-time
+        product_name:
+          type: string
+        quantity:
+          type: string
+        brands:
+          type: string
+        categories:
+          type: string
+        labels:
+          type: string
+        cities:
+          type: string
+        purchase_places:
+          type: string
+        stores:
+          type: string
+        ingredients_text:
+          type: string
+        traces:
+          type: string
+        serving_size:
+          type: string
+        serving_quantity:
+          type: integer
+        nutriscore_score:
+          type: integer
+        nutriscore_grade:
+          type: string
+        main_category:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
