@@ -44,7 +44,7 @@ abstract class AbstractProductRepository implements ProductRepositoryInterface
     public static function delete(string $code): array
     {
         $product = self::loadModel()::query()->where('code', $code)->first();
-
+        if($product->status == ProductStatus::TRASH->value) return ['message' => 'Product was removed from trash'];
         if ($product) {
             $product->status = ProductStatus::TRASH->value;
             $product->save();
