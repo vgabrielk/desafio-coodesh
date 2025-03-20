@@ -49,17 +49,17 @@ Lista todos os produtos disponíveis.
 
 ---
 
-## 🔍 Busca Avançada (Diferencial 1)
+## 🔍 Busca Avançada 
 Implementado um sistema de busca, permitindo pesquisas avançadas por produtos.
 
 ---
 
-## 🐳 Docker (Diferencial 2)
+## 🐳 Docker 
 O projeto está configurado para ser executado em um container Docker, facilitando o deploy e a configuração do ambiente.
 
 ---
 
-## 🚨 Sistema de Alerta (Diferencial 3)
+## 🚨 Sistema de Alerta 
 Notificações são enviadas caso ocorra algum erro durante o processo de sincronização dos produtos (CRON).
 
 ---
@@ -70,7 +70,7 @@ A API realiza a importação diária dos produtos da base de dados Open Food Fac
 
 ---
 
-## 🧪 Testes Unitários (Diferencial 5)
+## 🧪 Testes Unitários 
 Testes unitários foram implementados para garantir o funcionamento adequado dos endpoints `GET /products/:code`, `DELETE /products/:code` e `PUT /products/:code`.
 
 
