@@ -3,34 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Http\Services\Products\ProductService;
+use App\Repositories\ProductRepository;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-
-    protected ProductService $service;
-
-    public function __construct(ProductService $service)
+    public ProductRepository $productRepository;
+    public function __construct(ProductRepository $repository)
     {
-        $this->service = $service;
+        $this->productRepository = $repository;
     }
 
-    public function index()
+    public function index(Request $request): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->service->getPaginatedProducts();
+        return $this->productRepository->paginate($request);
     }
     public function show(String $code)
     {
-        return $this->service->getProductByCode($code);
+        return $this->productRepository->find($code);
     }
 
-    public function update(ProductRequest $request, String $code)
+    public function update(ProductRequest $request, String $code): array
     {
-        return $this->service->updateProduct($request->validated(), $code);
+        return $this->productRepository->update($code, $request->validated());
     }
 
-    public function destroy(String $code)
+    public function destroy(String $code): array
     {
-        return $this->service->deleteProduct($code);
+        return $this->productRepository->delete($code);
     }
 }
