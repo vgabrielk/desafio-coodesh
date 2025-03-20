@@ -4,42 +4,125 @@ namespace Tests\Unit;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Requests\ProductRequest;
-use App\Http\Services\Products\ProductService;
-use Illuminate\Http\JsonResponse;
+use App\Repositories\ProductRepository;
+use Illuminate\Http\Client\Request;
 use Mockery;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
 {
-    protected ProductService $service;
+    protected ProductRepository $repository;
     protected ProductController $controller;
 
     protected string $code = 'ABC1234';
 
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->service = Mockery::mock(ProductService::class);
-        $this->controller = new ProductController($this->service);
+        $this->repository = Mockery::mock(ProductRepository::class);
+        $this->controller = new ProductController($this->repository);
     }
-
-    public function test_index_calls_service_method()
+    public function test_delete_calls_repository_method_alter_status_to_trash()
     {
-        $this->service->shouldReceive('getPaginatedProducts')
+        $this->repository->shouldReceive('delete')
             ->once()
-            ->andReturn(['data' => 'paginated_products']);
+            ->with($this->code)
+            ->andReturn([
+                'message' => 'Product successfully moved to trash',
+                'product' => ['code' => $this->code]
+            ]);
 
-        $response = $this->controller->index();
+        $response = $this->controller->destroy($this->code);
 
-        $this->assertEquals(['data' => 'paginated_products'], $response);
+        $this->assertEquals([
+            'message' => 'Product successfully moved to trash',
+            'product' => ['code' => $this->code]
+        ], $response);
     }
 
-    public function test_show_calls_service_method_with_correct_code()
+    public function test_delete_returns_error_when_product_not_found()
     {
+        $this->repository->shouldReceive('delete')
+            ->once()
+            ->with($this->code)
+            ->andReturn([
+                'message' => 'Product not found for deletion',
+                'product' => null
+            ]);
 
-        $this->service->shouldReceive('getProductByCode')
+        $response = $this->controller->destroy($this->code);
+
+        $this->assertEquals([
+            'message' => 'Product not found for deletion',
+            'product' => null
+        ], $response);
+    }
+
+
+    public function test_update_calls_repository_method_and_returns_array()
+    {
+        $code = 'ABC123';
+        $requestData = [
+            'name' => 'Updated Product',
+            'price' => 100,
+            'description' => 'Updated description'
+        ];
+
+        $this->repository->shouldReceive('update')
+            ->once()
+            ->with($code, $requestData)
+            ->andReturn([
+                'message' => 'Product updated successfully',
+                'product' => $requestData
+            ]);
+
+        $request = Mockery::mock(ProductRequest::class)->makePartial();
+        $request->shouldReceive('validated')->andReturn($requestData);
+
+        $response = $this->controller->update($request, $code);
+
+        $this->assertIsArray($response);
+        $this->assertEquals('Product updated successfully', $response['message']);
+        $this->assertEquals($requestData, $response['product']);
+    }
+
+    public function test_update_returns_error_when_product_not_found()
+    {
+        $code = 'ABC123';
+        $requestData = [
+            'name' => 'Updated Product',
+            'price' => 100,
+            'description' => 'Updated description'
+        ];
+
+        $this->repository->shouldReceive('update')
+            ->once()
+            ->with($code, $requestData)
+            ->andReturn([
+                'message' => 'Product not found for update',
+                'product' => null
+            ]);
+
+        $request = Mockery::mock(ProductRequest::class)->makePartial();
+        $request->shouldReceive('validated')->andReturn($requestData);
+
+        $response = $this->controller->update($request, $code);
+
+        $this->assertIsArray($response);
+        $this->assertEquals('Product not found for update', $response['message']);
+        $this->assertNull($response['product']);
+    }
+
+    public function test_show_calls_repository_method_with_correct_code()
+    {
+        $this->repository->shouldReceive('find')
             ->once()
             ->with($this->code)
             ->andReturn(['code' => $this->code, 'name' => 'Product Name']);
@@ -48,52 +131,17 @@ class ProductControllerTest extends TestCase
 
         $this->assertEquals(['code' => $this->code, 'name' => 'Product Name'], $response);
     }
-    public function test_delete_calls_service_method_alter_status_to_trash()
-    {
-        $mockResponse = \Mockery::mock(JsonResponse::class);
-        $mockResponse->shouldReceive('getData')->andReturn(['message' => 'Deleted product success']);
 
-        $this->service->shouldReceive('deleteProduct')
+    public function test_show_returns_error_when_product_not_found()
+    {
+        $this->repository->shouldReceive('find')
             ->once()
             ->with($this->code)
-            ->andReturn($mockResponse);
+            ->andReturn('Product not found');
 
+        $response = $this->controller->show($this->code);
 
-        $response = $this->controller->destroy($this->code);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals(
-            ['message' => 'Deleted product success'],
-            $response->getData(true),
-        );
-
-    }
-
-    public function test_update_calls_service_method_and_returns_json_response()
-    {
-        $requestData = [
-            'name' => 'Updated Product',
-            'price' => 199.99
-        ];
-
-        $mockResponse = \Mockery::mock(JsonResponse::class);
-        $mockResponse->shouldReceive('getData')->andReturn(['message' => 'Update product success']);
-
-        $this->service->shouldReceive('updateProduct')
-            ->once()
-            ->with($requestData, $this->code)
-            ->andReturn($mockResponse);
-
-        $request = \Mockery::mock(ProductRequest::class);
-        $request->shouldReceive('validated')->andReturn($requestData);
-
-        $response = $this->controller->update($request, $this->code);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals(
-            ['message' => 'Update product success'],
-            $response->getData(true)
-        );
+        $this->assertEquals('Product not found', $response);
     }
 
 }
