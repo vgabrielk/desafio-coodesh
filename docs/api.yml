@@ -153,15 +153,34 @@ paths:
           schema:
             type: string
             format: uri
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            minimum: 1
       responses:
         "200":
           description: A list of products
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Product"
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of products
+                  page:
+                    type: integer
+                    description: Current page number
+                  page_size:
+                    type: integer
+                    description: Number of items per page
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
   /products/{code}:
     get:
       summary: Retrieve a single product by CODE
