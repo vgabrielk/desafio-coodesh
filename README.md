@@ -3,7 +3,7 @@
 
 
 Nesse projeto é possível editar, deletar, listar dados de produtos.
-Os produtos devem ser importados de uma api externa e salvo no banco de dados local para facilitar p acessp e manipulação.
+Os produtos devem ser importados de uma api externa e salvo no banco de dados local para facilitar o acessp e manipulação.
 ---
 
 ## 📚 Tecnologias Utilizadas
