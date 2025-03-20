@@ -59,12 +59,6 @@ O projeto está configurado para ser executado em um container Docker, facilitan
 
 ---
 
-## 🚨 Sistema de Alerta 
-Notificações são enviadas caso ocorra algum erro durante o processo de sincronização dos produtos (CRON).
-
----
-
-
 ## 📅 Sistema CRON
 A API realiza a importação diária dos produtos da base de dados Open Food Facts, limitando a importação para 100 produtos por arquivo. Além disso, mantém um histórico de importações para fins de validação e auditoria.
 
